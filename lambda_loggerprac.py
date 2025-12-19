@@ -1,4 +1,7 @@
 import boto3
+import logging
+logger = logging.getLogger()
+logger.setlevel(logging.info)
 
 def lambda_handler(event, context):
     a = event.get("a",0)
@@ -6,9 +9,9 @@ def lambda_handler(event, context):
 
     #Validating input practice
     if not isinstance(a,(int,float)) or not isinstance(b,(int,float)):
-        print(f"Invalid inputs: a={a}, b={b}")
+        logger.error(f"Invalid inputs: a={a}, b={b}")
         return {"error": "Both a and b must be numbers."}
     
     result = a + b 
-    print(f"Adding {a} + {b} gives us {result}")
+    logger.info(f"Adding {a} + {b} gives us {result}")
     return {"result": result}
