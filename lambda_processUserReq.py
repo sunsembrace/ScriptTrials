@@ -4,23 +4,30 @@
 #We then log this.
 #We also then return it.
 
+
 import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event,context):
     username = event.get("username")
-    password = event.get("password")
+    action = event.get("action")
 
-    if not isinstance(username,("string") or not (password,("string"))):
-        logger.error("Invalid datatype (is not a string) and is empty")
+#validate username
+    if not isinstance(username,(str)) or not username:
+        logger.error(f"Invalid username {username}: Must be a non empty string")
         return {
-            "Error": f"Your {username} and/or {password} were not a string or were empty.
+            "error": "Username must be a non-empty string"
         }
 
-    logger.info(f"{username}logged in successfully")
-    
+#Validate action
+    if action not in ["login", "logout"]:
+        logger.error(f"Invalid action: {action}")
         return {
-            "status": "success",
-            "message": f"{username} logged in successfully!"
+            "error": "The action must be log in, or log out."
         }
+
+    logger.info(f"{username} did {action}")
+    return{
+        "Success": f"user {username} was able to {action} successfully!"
+    }
