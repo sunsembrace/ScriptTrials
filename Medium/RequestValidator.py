@@ -20,11 +20,11 @@ def lambda_handler(event,context):
         age = event.get('age')
 
         if not isinstance(name,str) or not name:
-            logger.error("Failed": "Invalid name")
+            logger.error("400": "Invalid name")
             return {"Status":"Failed", "message": "unable to find valid name"}
 
         if not isinstance(age,int) or not age:
-            logger.error("Failed":"Invalid name")
+            logger.error("400":"Invalid name")
             return {"status": "Failed", "message": "unable to find valid age"}
             
     #Validate it into AWS service.
