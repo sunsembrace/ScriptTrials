@@ -38,7 +38,24 @@ def lambda_handler(event,context):
         
         data = json.loads(body)
         
+        #2. Extract fields
+        user_id = data.get("user_id")
+        email = data.get("email")
+
+        #3. Validate the fields. 
+        if not isinstance (user_id,str) or not user_id:
+            logger.error("User_ID not found")
+            return {"StatusCode": 400,
+                    "body": json.dumps({"Error": "Invalid user ID"})
+                    }
         
+        if not isinstance (email,str) or "@" not in email:
+            logger.error("Email not found")
+            return {"StatusCode":400, 
+                    "body": json.dumps({"Error":"Invalid email"})
+                    }
+        
+        #4. Conditional writes to DynamoDB.
     
     except Exception as e:
         logger.error()
