@@ -56,6 +56,18 @@ def lambda_handler(event,context):
                     }
         
         #4. Conditional writes to DynamoDB.
-    
+        table.put_item(
+            Item={
+            "user_id"
+            "email"
+            }
+        
+            ConditionExpression = "attribute_not_exists(user_id)"
+        ),
+
+        logger.info (f"User {user_id} created successfully")
+
+        #5. Success 
+        
     except Exception as e:
         logger.error()
