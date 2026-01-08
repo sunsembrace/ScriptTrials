@@ -1,73 +1,94 @@
-#Import Json
-#Import Logging
-#Import boto3
-#Take in event
-#Extract fields such as name from the event.
-#Compare it against a database
-#IF not currently existing, then creation can occur.
-#Otherwise reject
-#Validate throughout.
-
 import json
-import os
 import logging
+import os
 import boto3
+from botocore.exceptions import ClientError
 
+# Logger setup
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-DynamoDB = boto3.resources("DynamoDB")
+# AWS resources
+dynamodb = boto3.resource("dynamodb")
 
-#ENV variable.
+# Environment variable
 USERS_TABLE = os.environ.get("USERS_TABLE")
 
-#DynamoDB reference table.
-table = DynamoDB.Table( USERS_TABLE)
+# DynamoDB table reference
+table = dynamodb.Table(USERS_TABLE)
 
 
-def lambda_handler(event,context):
+def lambda_handler(event, context):
     try:
-        #1. Take in event
+        # 1. Parse request body (API Gateway style)
         body = event.get("body")
 
         if body is None:
-            logger.error("Missing Body request")
-            return {"StatusCode": 400,
-                    "body": json.dumps ({"error": "Request body is required"})
-                    }
-        
+            logger.error("Missing request body")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({"error": "Request body is required"})
+            }
+
         data = json.loads(body)
-        
-        #2. Extract fields
+
+        # 2. Extract fields
         user_id = data.get("user_id")
         email = data.get("email")
 
-        #3. Validate the fields. 
-        if not isinstance (user_id,str) or not user_id:
-            logger.error("User_ID not found")
-            return {"StatusCode": 400,
-                    "body": json.dumps({"Error": "Invalid user ID"})
-                    }
-        
-        if not isinstance (email,str) or "@" not in email:
-            logger.error("Email not found")
-            return {"StatusCode":400, 
-                    "body": json.dumps({"Error":"Invalid email"})
-                    }
-        
-        #4. Conditional writes to DynamoDB.
+        # 3. Validate inputs (fail early)
+        if not isinstance(user_id, str) or not user_id:
+            logger.error("Invalid user_id")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({"error": "Invalid user_id"})
+            }
+
+        if not isinstance(email, str) or "@" not in email:
+            logger.error("Invalid email")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({"error": "Invalid email"})
+            }
+
+        # 4. Conditional write to DynamoDB (prevent duplicates)
         table.put_item(
             Item={
-            "user_id"
-            "email"
+                "user_id": user_id,
+                "email": email
+            },
+            ConditionExpression="attribute_not_exists(user_id)"
+        )
+
+        logger.info(f"User {user_id} created successfully")
+
+        # 5. Success response
+        return {
+            "statusCode": 201,
+            "body": json.dumps({
+                "message": "User created successfully",
+                "user_id": user_id
+            })
+        }
+
+    except ClientError as e:
+        # Handle duplicate user specifically
+        if e.response["Error"]["Code"] == "ConditionalCheckFailedException":
+            logger.warning(f"Duplicate user attempt: {user_id}")
+            return {
+                "statusCode": 409,
+                "body": json.dumps({"error": "User already exists"})
             }
-        
-            ConditionExpression = "attribute_not_exists(user_id)"
-        ),
 
-        logger.info (f"User {user_id} created successfully")
+        logger.error(f"DynamoDB error: {str(e)}", exc_info=True)
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Database error"})
+        }
 
-        #5. Success 
-        
     except Exception as e:
-        logger.error()
+        logger.error(f"Unexpected error: {str(e)}", exc_info=True)
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Internal server error"})
+        }
