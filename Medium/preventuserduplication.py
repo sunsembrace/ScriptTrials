@@ -29,13 +29,16 @@ def lambda_handler(event,context):
     try:
         #1. Take in event
         body = event.get("body")
-        json.dumps()
 
-        if not isinstance(body,str) or not body:
-            logger.error("StatusCode", 400)
-            return {"Account creation failed": "User already exists"}
+        if body is None:
+            logger.error("Missing Body request")
+            return {"StatusCode": 400,
+                    "body": json.dumps ({"error": "Request body is required"})
+                    }
         
-
+        data = json.loads(body)
+        
+        
     
     except Exception as e:
         logger.error()
