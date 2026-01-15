@@ -28,7 +28,7 @@ def lambda_handler(event,context):
         
         if severity not in ("LOW", "MEDIUM", "HIGH"):
             logger.error("Invalid severity")
-            return {"status": "error", "message":, "Invalid severity"}
+            return {"status": "error", "message": "Invalid severity"}
         
         if severity != "HIGH":
             logger.info(f"Alert {alert_id} ignored (serverity={severity})")
