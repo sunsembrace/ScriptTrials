@@ -26,4 +26,12 @@ def lambda_handler(event,context):
         }
     )
 
-    expired_sessions = 
+    expired_sessions = response.get("Items",[])
+    logger.info(f"Found {len(expired_sessions)} expired sessions")
+
+    #3. Delete expired sessions
+    deleted_count = 0
+
+    for sessions in expired_sessions:
+        session_id = sessions["session id"]
+        
