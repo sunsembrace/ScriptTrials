@@ -14,3 +14,16 @@ dynamodb = boto3.resource("dynamodb")
 SESSION_TABLE = os.environ.get("SESSION_TABLE")
 
 def lambda_handler(event,context):
+    #1. Get current time
+    current_time = int(time.time())
+    logger.info(f"Cleanup started at {current_time}")
+
+    #2. Scan DynamoDB for expired sessions
+    response = table.scan(
+        FilterExpressions ="expires at < : now",
+        ExpressionAttributeValues= {
+            ":now": current_time
+        }
+    )
+
+    expired_sessions = 
