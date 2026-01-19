@@ -27,4 +27,10 @@ def lambda_handler(event, context):
             user_id = body.get("user_id")
             amount = body.get("amount")
 
- 
+            # 2. Validate inputs
+            if not isinstance(order_id, str) or not order_id:
+                raise ValueError("Invalid order_id")
+            if not isinstance(user_id, str) or not user_id:
+                raise ValueError("Invalid user_id")
+            if not isinstance(amount, (int, float)) or amount <= 0:
+                raise ValueError("Invalid amount")
