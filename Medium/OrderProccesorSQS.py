@@ -34,3 +34,27 @@ def lambda_handler(event, context):
                 raise ValueError("Invalid user_id")
             if not isinstance(amount, (int, float)) or amount <= 0:
                 raise ValueError("Invalid amount")
+
+            # 3. Write to DynamoDB
+            table.put_item(
+                Item={
+                    "order_id": order_id,
+                    "user_id": user_id,
+                    "amount": amount,
+                    "status": "CREATED"
+                }
+            )
+
+            logger.info(f"Processed order {order_id}")
+            processed += 1
+
+        except (ValueError, ClientError, json.JSONDecodeError) as e:
+            logger.error(f"Failed to process record: {str(e)}", exc_info=True)
+            failed += 1
+            # Let SQS retry this message automatically
+
+    return {
+        "status": "complete",
+        "processed": processed,
+        "failed": failed
+    }
