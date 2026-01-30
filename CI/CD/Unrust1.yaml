@@ -23,3 +23,9 @@ jobs:
     #1. Check out code
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    #2. Setup Node.Js
+    - name: Setup Node.Js
+      uses: actions/setup-node@v3
+      with:
+        node-version:'20'
