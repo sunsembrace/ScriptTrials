@@ -1,5 +1,7 @@
 #Gonna go for small-medium company CI/CD.
 #This will have 10 steps.
+#Uses: calls a prebuilt action (like checkout or setup-node)
+#run: executes a shell command inside the VM.
 
 #Phase 1
 name: mid1CI/CD
@@ -24,5 +26,16 @@ jobs:
 #GitHub provides prebuilt action for this so we don't have to write shell scripts.
 
 steps:
+#step 1. Checkout code --> Gives you files
   - name: Checkout repository #always first actions, bc everything else depends on code being there.
     uses: actions/checkout@v3 #This over git clone auto checks correct commit/branch, handles submodules and history c orreclty, keeps workflow simple, supports cashing and shallow clone optimizations.
+
+#step 2. setup environment --> Gives you the runtime/interpreter your code needs.
+  - name: Setup Node.Js
+    uses: actions/setup-node@v3
+    with:
+      node-version: '20'
+
+#step 3. install dependencies - now you can install safely as environment exists.
+  - name: Install dependencies
+    run: install npm 
