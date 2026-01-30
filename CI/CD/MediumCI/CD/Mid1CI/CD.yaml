@@ -1,0 +1,14 @@
+#Gonna go for small-medium company CI/CD.
+#This will have 10 steps.
+
+name: mid1CI/CD
+
+on:
+  push:
+    branches: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+#Why do we separate on: and runs-on:? Because they run on different layers of abstractions. On says when to do it, and runs-on is where aka the environment and fits the logical flow of a developers actions.
