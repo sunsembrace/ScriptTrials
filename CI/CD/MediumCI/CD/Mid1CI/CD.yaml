@@ -1,12 +1,14 @@
 #Gonna go for small-medium company CI/CD.
 #This will have 10 steps.
 
+#Phase 1
 name: mid1CI/CD
 
 on:
   push:
     branches: main
 
+#Phase 2
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,3 +18,11 @@ jobs:
 # on = When the event happens -->  party starts when client confirms guest list.
 #Runs-on = where the event takes place --> Picking the venue/environment its allowed but doesnt decide when the party starts.
 #Steps = What happens during the events --> Specific actions inside venue such as catering, dance and speeches when party has started.
+
+#Phase3 (steps)
+#VM starts empty, no code, no files. You need your project files to be available before you can install dependencies, run tests, or build.
+#GitHub provides prebuilt action for this so we don't have to write shell scripts.
+
+steps:
+  - name: Checkout repository #always first actions, bc everything else depends on code being there.
+    uses: actions/checkout@v3 #This over git clone auto checks correct commit/branch, handles submodules and history c orreclty, keeps workflow simple, supports cashing and shallow clone optimizations.
