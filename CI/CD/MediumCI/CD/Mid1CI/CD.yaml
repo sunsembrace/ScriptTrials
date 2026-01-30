@@ -38,4 +38,4 @@ steps:
 
 #step 3. install dependencies - now you can install safely as environment exists.
   - name: Install dependencies
-    run: install npm 
+    run: npm install 
