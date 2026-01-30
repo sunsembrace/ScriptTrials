@@ -1,3 +1,10 @@
+
+#What it does
+#on: tells GitHub when to run this workflow.
+#push: runs when you push code to a branch
+#pull_request: Runs when someone opens that PR branch
+#branches_main: only run when this is on the main branch
+
 name: unrust CI
 
 on:
@@ -7,3 +14,4 @@ on:
     pull_request:
       branches:
         - main
+
