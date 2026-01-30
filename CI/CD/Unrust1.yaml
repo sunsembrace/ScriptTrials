@@ -15,3 +15,11 @@ on:
       branches:
         - main
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    #1. Check out code
+    - name: Checkout repository
+      uses: actions/checkout@v3
