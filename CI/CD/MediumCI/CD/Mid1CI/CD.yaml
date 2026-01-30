@@ -12,3 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
 #Why do we separate on: and runs-on:? Because they run on different layers of abstractions. On says when to do it, and runs-on is where aka the environment and fits the logical flow of a developers actions.
+#Analogy:
+# on = When the event happens -->  party starts when client confirms guest list.
+#Runs-on = where the event takes place --> Picking the venue/environment its allowed but doesnt decide when the party starts.
+#Steps = What happens during the events --> Specific actions inside venue such as catering, dance and speeches when party has started.
