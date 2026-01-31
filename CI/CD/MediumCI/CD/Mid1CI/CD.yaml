@@ -41,3 +41,9 @@ steps:
     run: npm install 
 
 #step 4. Run tests - We run tests after dependencies as code depends on libraries and modules, and we test before the build for early error detection to save time and avoid shipping broken code.
+
+#step 5 - Build Project - We separate actual artifact creation which is step 5 (deployable artifact = bundle, compiled files, docker imagese etc)
+  - name: Buiild project
+    run: npm run build
+
+#step 6. Secyurity checks - We can dependencies or code for vulneabilities before deployment.
