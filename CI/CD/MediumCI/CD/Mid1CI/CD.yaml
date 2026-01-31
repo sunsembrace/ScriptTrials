@@ -43,7 +43,7 @@ steps:
 #step 4. Run tests - We run tests after dependencies as code depends on libraries and modules, and we test before the build for early error detection to save time and avoid shipping broken code.
 
 #step 5 - Build Project - We separate actual artifact creation which is step 5 (deployable artifact = bundle, compiled files, docker imagese etc)
-  - name: Buiild project
+  - name: Build project
     run: npm run build
 
 #step 6. Security checks - We can dependencies or code for vulneabilities before deployment.
@@ -55,4 +55,21 @@ steps:
     # By keeping it after build, you check the actual code you're playing deploying, including all installed dependencies
     #Security checks are run after dependencies but before deployment bc dependencies are on attack surface, they catch vuln before deployment and fail-fast principle.
     #Each step d oes one thing well, making debugging and maintenance easier.
+
+
+#step 7. Deployment. #Now we go from CI to CD .
+
+  - name: Deploy to GitHub Pages
+    uses: peaceiris/actions-gh-pages@v4
+    with:
+      github_token: ${{secrets.github_token }}
+      publish_dir: ./build
+
+#use a prebuilt action like uses for deployment bc it handles authentication, branch switching and commit safely.
+#Deployment only happens if prev step passes --> Ensures only tested, secure code is shipped.
+#Secrets stored in Github --> Avoids exposing tokens in the workflow.
+#Modular design --> can later replace github pages with AWS, docker deploy etc without touching early steps.
+
+#step 8. Notifications.
+
     
