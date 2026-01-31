@@ -72,4 +72,16 @@ steps:
 
 #step 8. Notifications.
 
-    
+  - name: Notify via slack
+    if: always() #run on success or failure
+    uses: slackapi/slack-github-action@v1.23.0
+    with:
+      channel-id: 'YOUR_CHANNEL_ID'
+      slack-token: ${{secrets.SLACK_TOKEN}}
+      text: 'Deployment finshed! Check the status.'
+
+      #if: always() --> Ensures notif runs even if prev step fails.
+      #prebuilt action(uses:) --> Handles slack api integration, auth, formatting
+      #secrets --> Slack token is stored securely in github secrets, never hard-coded.
+      #Modular -> You can swap Slack for Teams, email or even a custom webhook without touching the rest of the pipeline.
+      
