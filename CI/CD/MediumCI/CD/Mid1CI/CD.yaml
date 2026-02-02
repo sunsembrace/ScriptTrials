@@ -100,3 +100,22 @@ steps:
   # restore-keys --> Fallback if exact match isn't found
   # This means: Same dependencies -> reused, 
   # changed dependencies -> Fresh install
+
+  #Step 10. Environment & Branch protection (Real production safety).
+  # This step stops paccidentalyu deployments, jrs pushing straigh to prod, oops moments at 2am.
+  # Environments introduce controlled gates between CI and real infrastructure.
+  # They let you: require manual approval before prod deploys, sceopse secrets per env, restrict who can deploy where.
+
+  - name: Deploy to production
+    environment:
+      name: production
+    uses: peaceiris/actions-gh-pages@v4
+    with:
+      github_token: ${{ secrets.github_token}}
+      publish_dir: ./build
+
+      #Pipeline pauses until approval is granted. 
+      #1. Separation of powers --> CI proves correctness, and humans control impact.
+      #2. Blast-raddious control --> Bug in main? Doesn't instantly nuke prod.
+      #3. Auditability --> Who approved what, when and why.
+      #4. Scales with team size --> Same pipeline works for 2 devs or 200.
