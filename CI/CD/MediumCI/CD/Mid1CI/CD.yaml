@@ -84,4 +84,19 @@ steps:
       #prebuilt action(uses:) --> Handles slack api integration, auth, formatting
       #secrets --> Slack token is stored securely in github secrets, never hard-coded.
       #Modular -> You can swap Slack for Teams, email or even a custom webhook without touching the rest of the pipeline.
-      
+
+#step 9. Cache dependencies (Speed + cost control)
+#CI runs often and constantly reinstalling dependencies is slow and expensive. Caching can make it 3-10x faster and therefore faster feedback, happier devs and cheaper CI bills.
+  - name: Cache npm dependencies
+    uses: actions/cache@v3
+    with:
+      path: ~/.npm
+      key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      restore-keys: |
+        ${{ runner.os }}-npm-
+
+  # path --> What files to save between runs
+  # key --> When to reuse cache(changes if package-lock.json changes)
+  # restore-keys --> Fallback if exact match isn't found
+  # This means: Same dependencies -> reused, 
+  # changed dependencies -> Fresh install
